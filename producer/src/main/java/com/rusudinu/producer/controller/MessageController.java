@@ -1,11 +1,10 @@
 package com.rusudinu.producer.controller;
 
-import org.springframework.kafka.core.KafkaTemplate;
+import com.rusudinu.producer.config.RabbitMQConfig;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.kafka.support.SendResult;
-import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @RestController
@@ -13,23 +12,19 @@ import java.util.concurrent.CompletableFuture;
 @RequiredArgsConstructor
 public class MessageController {
 
-    private final KafkaTemplate<String, String> kafkaTemplate;
+    private final RabbitTemplate rabbitTemplate;
 
     @PostMapping
     public String sendMessage(@RequestBody String message) {
-        log.info("Attempting to send message to Kafka topic 'messages': {}", message);
+        log.info("Attempting to send message to RabbitMQ queue 'messages': {}", message);
         
-        CompletableFuture<SendResult<String, String>> future = kafkaTemplate.send("messages", message);
-        future.whenComplete((result, ex) -> {
-            if (ex == null) {
-                log.info("Message sent successfully to partition {} with offset {}", 
-                    result.getRecordMetadata().partition(),
-                    result.getRecordMetadata().offset());
-            } else {
-                log.error("Failed to send message to Kafka: {}", ex.getMessage(), ex);
-            }
-        });
-        
-        return "Message processing initiated: " + message;
+        try {
+            rabbitTemplate.convertAndSend(RabbitMQConfig.QUEUE_NAME, message);
+            log.info("Message sent successfully to RabbitMQ queue");
+            return "Message sent successfully: " + message;
+        } catch (Exception e) {
+            log.error("Failed to send message to RabbitMQ: {}", e.getMessage(), e);
+            return "Failed to send message: " + e.getMessage();
+        }
     }
 } 

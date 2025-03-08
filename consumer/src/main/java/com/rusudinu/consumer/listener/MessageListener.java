@@ -1,6 +1,8 @@
 package com.rusudinu.consumer.listener;
 
-import org.springframework.kafka.annotation.KafkaListener;
+import com.rusudinu.consumer.config.RabbitMQConfig;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 import lombok.extern.slf4j.Slf4j;
 
@@ -8,8 +10,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class MessageListener {
 
-    @KafkaListener(topics = "messages", groupId = "messages-group")
-    public void listen(String message) {
-        log.info("Received message: {}", message);
+    @RabbitListener(queues = RabbitMQConfig.QUEUE_NAME)
+    public void listen(@Payload String message) {
+        log.info("----------------------------------------");
+        log.info("Received new message from RabbitMQ:");
+        log.info("Message content: {}", message);
+        log.info("----------------------------------------");
     }
 } 

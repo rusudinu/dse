@@ -1,38 +1,11 @@
-management:
-  metrics:
-    enable:
-      process:
-        cpu: false
-        uptime: false
-        files: false
-      jvm:
-        memory: true
-        gc: true
-        threads: true
-  endpoints:
-    web:
-      exposure:
-        include: health,info,metrics
-  health:
-    diskspace:
-      enabled: false
-    db:
-      enabled: false
-
 spring:
   application:
-    name: kafka-consumer
-  kafka:
-    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
-    consumer:
-      group-id: ${SPRING_KAFKA_CONSUMER_GROUP_ID:my-consumer-group}
-      auto-offset-reset: ${SPRING_KAFKA_CONSUMER_AUTO_OFFSET_RESET:earliest}
-      enable-auto-commit: false
-      properties:
-        isolation.level: read_committed
-      max-poll-records: 500
-      fetch-min-size: 1
-      fetch-max-wait: 500
+    name: rabbitmq-consumer
+  rabbitmq:
+    host: ${SPRING_RABBITMQ_HOST:localhost}
+    port: ${SPRING_RABBITMQ_PORT:5672}
+    username: ${SPRING_RABBITMQ_USERNAME:guest}
+    password: ${SPRING_RABBITMQ_PASSWORD:guest}
 
 server:
   port: 8080

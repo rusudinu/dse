@@ -8,6 +8,6 @@ RUN gradle build --no-daemon
 FROM openjdk:17-slim
 WORKDIR /app
 COPY --from=builder /app/build/libs/*.jar app.jar
-EXPOSE 8080
+EXPOSE 8081
 ENV JAVA_TOOL_OPTIONS="-XX:+UseContainerSupport -XX:+ExitOnOutOfMemoryError -XX:MaxRAMPercentage=75 -Dspring.jmx.enabled=false"
 ENTRYPOINT ["java", "-jar", "app.jar"] 

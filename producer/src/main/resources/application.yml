@@ -1,40 +1,14 @@
-management:
-  metrics:
-    enable:
-      process:
-        cpu: false
-        uptime: false
-        files: false
-      jvm:
-        memory: true
-        gc: true
-        threads: true
-  endpoints:
-    web:
-      exposure:
-        include: health,info,metrics
-  health:
-    diskspace:
-      enabled: false
-    db:
-      enabled: false
-
 spring:
   application:
-    name: kafka-producer
-  kafka:
-    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
-    producer:
-      properties:
-        enable.idempotence: ${SPRING_KAFKA_PRODUCER_PROPERTIES_ENABLE_IDEMPOTENCE:true}
-      acks: ${SPRING_KAFKA_PRODUCER_ACKS:all}
-      retries: 3
-      batch-size: 16384
-      buffer-memory: 33554432
-      compression-type: snappy
+    name: rabbitmq-producer
+  rabbitmq:
+    host: ${SPRING_RABBITMQ_HOST:localhost}
+    port: ${SPRING_RABBITMQ_PORT:5672}
+    username: ${SPRING_RABBITMQ_USERNAME:guest}
+    password: ${SPRING_RABBITMQ_PASSWORD:guest}
 
 server:
-  port: 8080
+  port: 8081
 
 logging:
   level:
