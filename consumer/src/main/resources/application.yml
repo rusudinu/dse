@@ -1,5 +1,23 @@
-server:
-  port: 8080
+management:
+  metrics:
+    enable:
+      process:
+        cpu: false
+        uptime: false
+        files: false
+      jvm:
+        memory: true
+        gc: true
+        threads: true
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  health:
+    diskspace:
+      enabled: false
+    db:
+      enabled: false
 
 spring:
   application:
@@ -14,4 +32,12 @@ spring:
         isolation.level: read_committed
       max-poll-records: 500
       fetch-min-size: 1
-      fetch-max-wait: 500 
+      fetch-max-wait: 500
+
+server:
+  port: 8080
+
+logging:
+  level:
+    root: INFO
+    org.springframework: INFO 

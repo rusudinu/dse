@@ -1,5 +1,23 @@
-server:
-  port: 8080
+management:
+  metrics:
+    enable:
+      process:
+        cpu: false
+        uptime: false
+        files: false
+      jvm:
+        memory: true
+        gc: true
+        threads: true
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  health:
+    diskspace:
+      enabled: false
+    db:
+      enabled: false
 
 spring:
   application:
@@ -13,4 +31,12 @@ spring:
       retries: 3
       batch-size: 16384
       buffer-memory: 33554432
-      compression-type: snappy 
+      compression-type: snappy
+
+server:
+  port: 8080
+
+logging:
+  level:
+    root: INFO
+    org.springframework: INFO 
