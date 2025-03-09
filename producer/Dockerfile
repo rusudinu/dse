@@ -1,11 +1,11 @@
 # Build stage
-FROM gradle:8.5-jdk21 AS builder
+FROM gradle:8.5-jdk17 AS builder
 WORKDIR /app
 COPY . .
 RUN gradle build --no-daemon
 
 # Run stage
-FROM --platform=linux/arm64 openjdk:21-slim
+FROM openjdk:17-jdk
 WORKDIR /app
 COPY --from=builder /app/build/libs/*.jar app.jar
 EXPOSE 8081

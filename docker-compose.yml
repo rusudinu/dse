@@ -30,8 +30,6 @@ services:
       SPRING_RABBITMQ_PORT: 5672
       SPRING_RABBITMQ_USERNAME: guest
       SPRING_RABBITMQ_PASSWORD: guest
-      JAVA_TOOL_OPTIONS: "-Dmanagement.metrics.enable.process.cpu=false -Dmanagement.metrics.enable.system.cpu=false"
-
   consumer:
     build:
       context: ./consumer
@@ -41,10 +39,9 @@ services:
       rabbitmq:
         condition: service_healthy
     ports:
-      - "8082:8080"
+      - "8080:8080"
     environment:
       SPRING_RABBITMQ_HOST: rabbitmq
       SPRING_RABBITMQ_PORT: 5672
       SPRING_RABBITMQ_USERNAME: guest
       SPRING_RABBITMQ_PASSWORD: guest
-      JAVA_TOOL_OPTIONS: "-Dmanagement.metrics.enable.process.cpu=false -Dmanagement.metrics.enable.system.cpu=false" 
