@@ -12,9 +12,6 @@ public class MessageListener {
 
     @RabbitListener(queues = RabbitMQConfig.QUEUE_NAME)
     public void listen(@Payload String message) {
-        log.info("----------------------------------------");
-        log.info("Received new message from RabbitMQ:");
-        log.info("Message content: {}", message);
-        log.info("----------------------------------------");
+        log.info("RMQ Msg: {}", message);
     }
 } 

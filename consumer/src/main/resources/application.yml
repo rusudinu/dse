@@ -2,10 +2,20 @@ spring:
   application:
     name: rabbitmq-consumer
   rabbitmq:
-    host: ${SPRING_RABBITMQ_HOST:localhost}
-    port: ${SPRING_RABBITMQ_PORT:5672}
+    addresses: ${SPRING_RABBITMQ_ADDRESSES:localhost:5672}
     username: ${SPRING_RABBITMQ_USERNAME:guest}
     password: ${SPRING_RABBITMQ_PASSWORD:guest}
+    # Cluster specific configurations
+    listener:
+      simple:
+        retry:
+          enabled: true
+          initial-interval: 1000ms
+          max-attempts: 3
+          max-interval: 10000ms
+          multiplier: 2.0
+        acknowledge-mode: auto
+        prefetch: 1
 
 server:
   port: 8080

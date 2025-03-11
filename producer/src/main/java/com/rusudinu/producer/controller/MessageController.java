@@ -1,8 +1,12 @@
 package com.rusudinu.producer.controller;
 
 import com.rusudinu.producer.config.RabbitMQConfig;
+
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -12,19 +16,18 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class MessageController {
 
-    private final RabbitTemplate rabbitTemplate;
+	private final RabbitTemplate rabbitTemplate;
 
-    @PostMapping
-    public String sendMessage(@RequestBody String message) {
-        log.info("Attempting to send message to RabbitMQ queue 'messages': {}", message);
-        
-        try {
-            rabbitTemplate.convertAndSend(RabbitMQConfig.QUEUE_NAME, message);
-            log.info("Message sent successfully to RabbitMQ queue");
-            return "Message sent successfully: " + message;
-        } catch (Exception e) {
-            log.error("Failed to send message to RabbitMQ: {}", e.getMessage(), e);
-            return "Failed to send message: " + e.getMessage();
-        }
-    }
+	@PostMapping("{messagesToSend}")
+	public String sendMessage(@RequestBody String message, @PathVariable Long messagesToSend) {
+		List<String> messages = new ArrayList<>();
+		for (int i = 0; i < messagesToSend; i++) {
+			messages.add(message + " [" + i + "]");
+		}
+
+		log.info("Finished preparing messages to send");
+
+		messages.parallelStream().forEach(s -> rabbitTemplate.convertAndSend(RabbitMQConfig.QUEUE_NAME, s));
+		return "Messages sent successfully";
+	}
 } 
