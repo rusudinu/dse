@@ -81,7 +81,7 @@
             "type": "influxdb",
             "uid": "P951FEA4DE68E13C5"
           },
-          "query": "from(bucket: \"rabbitmq\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"rabbitmq_queue\")\n  |> filter(fn: (r) => r._field == \"messages\" or r._field == \"messages_ready\" or r._field == \"messages_unacked\" or r._field == \"consumers\")\n  |> last()\n  |> group(columns: [\"queue\", \"vhost\", \"_field\"])",
+          "query": "from(bucket: \"rabbitmq\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"rabbitmq_queue\")\n  |> filter(fn: (r) => r._field == \"messages\" or r._field == \"messages_ready\" or r._field == \"messages_unacked\" or r._field == \"consumers\")\n  |> filter(fn: (r) => r.queue =~ /^${queue:regex}$/ or \"$queue\" == \"$__all\")\n  |> filter(fn: (r) => r.node =~ /^${node:regex}$/ or \"$node\" == \"$__all\")\n  |> last()\n  |> group(columns: [\"queue\", \"vhost\", \"_field\"])",
           "refId": "A"
         }
       ],
@@ -171,7 +171,7 @@
             "type": "influxdb",
             "uid": "P951FEA4DE68E13C5"
           },
-          "query": "from(bucket: \"rabbitmq\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"rabbitmq_queue\")\n  |> filter(fn: (r) => r._field == \"messages_ready\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
+          "query": "from(bucket: \"rabbitmq\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"rabbitmq_queue\")\n  |> filter(fn: (r) => r._field == \"messages_ready\")\n  |> filter(fn: (r) => r.queue =~ /^${queue:regex}$/ or \"$queue\" == \"$__all\")\n  |> filter(fn: (r) => r.node =~ /^${node:regex}$/ or \"$node\" == \"$__all\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
           "refId": "A"
         }
       ],
@@ -255,7 +255,17 @@
         }
       },
       "title": "Messages Unacknowledged",
-      "type": "timeseries"
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
+          },
+          "query": "from(bucket: \"rabbitmq\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"rabbitmq_queue\")\n  |> filter(fn: (r) => r._field == \"messages_unacked\")\n  |> filter(fn: (r) => r.queue =~ /^${queue:regex}$/ or \"$queue\" == \"$__all\")\n  |> filter(fn: (r) => r.node =~ /^${node:regex}$/ or \"$node\" == \"$__all\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
+          "refId": "A"
+        }
+      ]
     },
     {
       "datasource": {
@@ -334,7 +344,17 @@
         }
       },
       "title": "Message Rate In",
-      "type": "timeseries"
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
+          },
+          "query": "from(bucket: \"rabbitmq\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"rabbitmq_queue\")\n  |> filter(fn: (r) => r._field == \"message_stats_publish_in_rate\" or r._field == \"message_stats_publish_in\")\n  |> filter(fn: (r) => r.queue =~ /^${queue:regex}$/ or \"$queue\" == \"$__all\")\n  |> filter(fn: (r) => r.node =~ /^${node:regex}$/ or \"$node\" == \"$__all\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
+          "refId": "A"
+        }
+      ]
     },
     {
       "datasource": {
@@ -413,7 +433,17 @@
         }
       },
       "title": "Message Rate Out",
-      "type": "timeseries"
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
+          },
+          "query": "from(bucket: \"rabbitmq\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"rabbitmq_queue\")\n  |> filter(fn: (r) => r._field == \"message_stats_deliver_get_rate\" or r._field == \"message_stats_deliver_rate\")\n  |> filter(fn: (r) => r.queue =~ /^${queue:regex}$/ or \"$queue\" == \"$__all\")\n  |> filter(fn: (r) => r.node =~ /^${node:regex}$/ or \"$node\" == \"$__all\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
+          "refId": "A"
+        }
+      ]
     }
   ],
   "refresh": "5s",
@@ -432,9 +462,35 @@
         "includeAll": true,
         "name": "queue",
         "options": [],
-        "query": "",
+        "query": {
+          "query": "from(bucket: \"rabbitmq\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"rabbitmq_queue\")\n  |> group(columns: [\"queue\"])\n  |> distinct(column: \"queue\")\n  |> keep(columns: [\"_value\"])\n  |> sort()",
+          "refId": "Queues-Variable-Query"
+        },
+        "refresh": 2,
+        "regex": "",
         "skipUrlSync": false,
-        "type": "custom"
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
+        "hide": 0,
+        "includeAll": true,
+        "name": "node",
+        "options": [],
+        "query": {
+          "query": "from(bucket: \"rabbitmq\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"rabbitmq_node\")\n  |> group(columns: [\"node\"])\n  |> distinct(column: \"node\")\n  |> keep(columns: [\"_value\"])\n  |> sort()",
+          "refId": "Nodes-Variable-Query"
+        },
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
       }
     ]
   },
