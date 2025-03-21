@@ -344,7 +344,17 @@
         }
       },
       "title": "File Descriptors Used",
-      "type": "timeseries"
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
+          },
+          "query": "from(bucket: \"rabbitmq\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"rabbitmq_node\")\n  |> filter(fn: (r) => r._field == \"fd_used\")\n  |> filter(fn: (r) => r.node =~ /^${node:regex}$/ or \"$node\" == \"$__all\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
+          "refId": "A"
+        }
+      ]
     },
     {
       "datasource": {
@@ -423,7 +433,17 @@
         }
       },
       "title": "Erlang Processes",
-      "type": "timeseries"
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
+          },
+          "query": "from(bucket: \"rabbitmq\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"rabbitmq_node\")\n  |> filter(fn: (r) => r._field == \"proc_used\")\n  |> filter(fn: (r) => r.node =~ /^${node:regex}$/ or \"$node\" == \"$__all\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
+          "refId": "A"
+        }
+      ]
     }
   ],
   "refresh": "5s",
