@@ -94,4 +94,42 @@ This approach eliminates the need for Prometheus while still providing comprehen
 To customize the metrics collected by Telegraf or add more dashboards to Grafana, you can:
 
 1. Modify the `telegraf/telegraf.conf` file to change what metrics are collected.
-2. Create or import additional Grafana dashboards and save them in the `grafana/provisioning/dashboards/rabbitmq` directory. 
+2. Create or import additional Grafana dashboards and save them in the `grafana/provisioning/dashboards/rabbitmq` directory.
+
+## Load Testing with k6
+
+This project includes load tests using [k6](https://k6.io/), a modern load testing tool. These tests can help identify performance bottlenecks and ensure the system handles expected traffic.
+
+### Available Tests
+
+- **Simple Message Post Test**: Tests the endpoint for posting 100 messages
+- **Comprehensive Load Test Suite**: Includes multiple test scenarios (smoke, load, stress, spike)
+- **Throughput Benchmark**: Specifically measures throughput of the message posting endpoint
+
+### Running Load Tests
+
+1. **Install k6**:
+   ```bash
+   # macOS
+   brew install k6
+   
+   # Or using Docker
+   docker pull grafana/k6
+   ```
+
+2. **Run a basic test**:
+   ```bash
+   k6 run k6/post-messages-test.js
+   ```
+
+3. **Run the benchmark test**:
+   ```bash
+   k6 run k6/benchmark.js
+   ```
+
+4. **View results in Grafana** (if you're using the InfluxDB setup):
+   ```bash
+   k6 run --out influxdb=http://localhost:8086/k6 k6/load-tests.js
+   ```
+
+For detailed instructions about running and configuring the tests, see the [k6/README.md](k6/README.md) file. 
