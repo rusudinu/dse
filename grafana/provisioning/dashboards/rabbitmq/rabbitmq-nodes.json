@@ -75,6 +75,16 @@
         },
         "showHeader": true
       },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
+          },
+          "query": "from(bucket: \"rabbitmq\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"rabbitmq_node\")\n  |> filter(fn: (r) => r._field == \"running\" or r._field == \"mem_alarm\" or r._field == \"disk_free_alarm\")\n  |> last()\n  |> group(columns: [\"node\", \"_field\"])",
+          "refId": "A"
+        }
+      ],
       "pluginVersion": "9.5.1",
       "title": "Node Status",
       "type": "table"
@@ -155,6 +165,16 @@
           "sort": "none"
         }
       },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
+          },
+          "query": "from(bucket: \"rabbitmq\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"system\")\n  |> filter(fn: (r) => r._field == \"load1\" or r._field == \"load5\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
+          "refId": "A"
+        }
+      ],
       "title": "CPU Usage",
       "type": "timeseries"
     },
@@ -234,6 +254,16 @@
           "sort": "none"
         }
       },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
+          },
+          "query": "from(bucket: \"rabbitmq\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"rabbitmq_node\")\n  |> filter(fn: (r) => r._field == \"mem_used\" or r._field == \"mem_limit\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
+          "refId": "A"
+        }
+      ],
       "title": "Memory Usage",
       "type": "timeseries"
     },

@@ -75,6 +75,16 @@
         },
         "showHeader": true
       },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
+          },
+          "query": "from(bucket: \"rabbitmq\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"rabbitmq_queue\")\n  |> filter(fn: (r) => r._field == \"messages\" or r._field == \"messages_ready\" or r._field == \"messages_unacked\" or r._field == \"consumers\")\n  |> last()\n  |> group(columns: [\"queue\", \"vhost\", \"_field\"])",
+          "refId": "A"
+        }
+      ],
       "pluginVersion": "9.5.1",
       "title": "Queue Overview",
       "type": "table"
@@ -155,6 +165,16 @@
           "sort": "none"
         }
       },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
+          },
+          "query": "from(bucket: \"rabbitmq\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"rabbitmq_queue\")\n  |> filter(fn: (r) => r._field == \"messages_ready\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
+          "refId": "A"
+        }
+      ],
       "title": "Messages Ready",
       "type": "timeseries"
     },
