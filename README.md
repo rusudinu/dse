@@ -1,7 +1,3 @@
-# RabbitMQ Monitoring with Grafana and InfluxDB
-
-This project sets up monitoring for a RabbitMQ cluster using Grafana and InfluxDB (without Prometheus).
-
 ## Components
 
 - **RabbitMQ Cluster**: Three node RabbitMQ cluster
@@ -22,7 +18,6 @@ Start the entire stack using Docker Compose:
 ```bash
 docker-compose up -d
 ```
-
 This will start:
 - Three RabbitMQ nodes in a cluster
 - InfluxDB for storing metrics
@@ -46,90 +41,12 @@ This will start:
   - URL: http://localhost:8086
   - Credentials: admin/adminpassword
 
-## Monitoring Dashboards
-
-The following dashboards are available in Grafana:
-
-1. **RabbitMQ Overview**: General metrics about the RabbitMQ cluster, including queue messages, publish rates, consumer counts, memory usage, connections, and channels.
-
-2. **RabbitMQ Nodes**: Detailed metrics for each RabbitMQ node, including CPU usage, memory usage, file descriptors, and Erlang processes.
-
-3. **RabbitMQ Queues**: Queue-specific metrics including message counts, ready messages, unacknowledged messages, and message rates.
-
-## How It Works
-
-1. Telegraf collects metrics from RabbitMQ Management API endpoints.
-2. Metrics are stored in InfluxDB.
-3. Grafana visualizes the metrics using pre-configured dashboards.
-
-This approach eliminates the need for Prometheus while still providing comprehensive monitoring for your RabbitMQ cluster.
-
-## Troubleshooting
-
-### No metrics showing in Grafana
-
-1. Verify that Telegraf is connecting to RabbitMQ by checking logs:
-   ```bash
-   docker-compose logs telegraf
-   ```
-
-2. Verify that InfluxDB is receiving and storing data:
-   ```bash
-   docker-compose logs influxdb
-   ```
-
-3. Make sure that the Grafana InfluxDB data source is correctly configured. Go to Configuration > Data Sources in Grafana UI to check.
-
-### RabbitMQ nodes not clustering properly
-
-1. Check the logs for RabbitMQ nodes:
-   ```bash
-   docker-compose logs rabbitmq1 rabbitmq2 rabbitmq3
-   ```
-
-2. Verify that the Erlang cookie is consistent across all nodes.
-
-## Customization
-
-To customize the metrics collected by Telegraf or add more dashboards to Grafana, you can:
-
-1. Modify the `telegraf/telegraf.conf` file to change what metrics are collected.
-2. Create or import additional Grafana dashboards and save them in the `grafana/provisioning/dashboards/rabbitmq` directory.
-
-## Load Testing with k6
-
-This project includes load tests using [k6](https://k6.io/), a modern load testing tool. These tests can help identify performance bottlenecks and ensure the system handles expected traffic.
-
-### Available Tests
-
-- **Simple Message Post Test**: Tests the endpoint for posting 100 messages
-- **Comprehensive Load Test Suite**: Includes multiple test scenarios (smoke, load, stress, spike)
-- **Throughput Benchmark**: Specifically measures throughput of the message posting endpoint
-
 ### Running Load Tests
 
-1. **Install k6**:
-   ```bash
-   # macOS
-   brew install k6
-   
-   # Or using Docker
-   docker pull grafana/k6
-   ```
+```bash
+k6 run k6/post-messages-test.js
+```
 
-2. **Run a basic test**:
-   ```bash
-   k6 run k6/post-messages-test.js
-   ```
-
-3. **Run the benchmark test**:
-   ```bash
-   k6 run k6/benchmark.js
-   ```
-
-4. **View results in Grafana** (if you're using the InfluxDB setup):
-   ```bash
-   k6 run --out influxdb=http://localhost:8086/k6 k6/load-tests.js
-   ```
-
-For detailed instructions about running and configuring the tests, see the [k6/README.md](k6/README.md) file. 
+```bash
+k6 run k6/benchmark.js
+```
