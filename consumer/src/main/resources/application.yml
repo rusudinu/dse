@@ -24,3 +24,8 @@ logging:
   level:
     root: INFO
     org.springframework: INFO 
+
+# Ollama configuration
+ollama:
+  api:
+    url: ${OLLAMA_API_URL:http://localhost:11434/api/generate}

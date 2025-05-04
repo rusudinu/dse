@@ -3,6 +3,7 @@ package com.rusudinu.consumer.service;
 import com.rusudinu.consumer.model.ImageAnalysisResult;
 import com.rusudinu.consumer.model.ImageCategory;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -17,8 +18,10 @@ import java.util.Map;
 @Slf4j
 public class OllamaService {
 
-    private static final String OLLAMA_API_URL = "http://ollama:11434/api/generate";
     private static final String MODEL_NAME = "llava";
+
+    @Value("${ollama.api.url:http://localhost:11434/api/generate}")
+    private String ollamaApiUrl;
 
     private final RestTemplate restTemplate;
 
@@ -62,7 +65,7 @@ public class OllamaService {
 
             // Make request to Ollama
             HttpEntity<Map<String, Object>> request = new HttpEntity<>(requestBody, headers);
-            Map<String, Object> response = restTemplate.postForObject(OLLAMA_API_URL, request, Map.class);
+            Map<String, Object> response = restTemplate.postForObject(ollamaApiUrl, request, Map.class);
 
             // Process response
             if (response != null && response.containsKey("response")) {
