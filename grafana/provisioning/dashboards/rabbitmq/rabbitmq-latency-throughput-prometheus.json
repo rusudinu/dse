@@ -220,9 +220,40 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "rabbitmq_queue_messages{queue=~\"$queue\"} / clamp_min(rate(rabbitmq_queue_messages_delivered_total{queue=~\"$queue\"}[1m]), 0.001) * 1000",
+          "expr": "rabbitmq_queue_messages{queue=~\"$queue\"} / clamp_min(rate(rabbitmq_queue_messages_delivered_total{queue=~\"$queue\"}[5m]), 0.001) * 1000",
+          "instant": false,
           "legendFormat": "Estimated latency ({{queue}} - {{instance}})",
           "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "expr": "rabbitmq_queue_consumer_utilisation{queue=~\"$queue\"} * 1000",
+          "hide": false,
+          "legendFormat": "Consumer utilization based ({{queue}} - {{instance}})",
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "expr": "max_over_time(rabbitmq_queue_messages{queue=~\"$queue\"}[5m]) / clamp_min(rate(rabbitmq_queue_messages_delivered_total{queue=~\"$queue\"}[5m]), 0.001) * 1000",
+          "hide": false,
+          "legendFormat": "Max latency ({{queue}} - {{instance}})",
+          "refId": "C"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "expr": "increase(rabbitmq_queue_process_memory_bytes{queue=~\"$queue\"}[1m]) / 1024",
+          "hide": false,
+          "legendFormat": "Memory-based latency ({{queue}} - {{instance}})",
+          "refId": "D"
         }
       ],
       "title": "Estimated Message Latency",
