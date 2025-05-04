@@ -15,7 +15,7 @@ spring:
           max-interval: 10000ms
           multiplier: 2.0
         acknowledge-mode: auto
-        prefetch: 1
+        prefetch: 10  # Increased to handle a fixed batch of messages at a time
 
 server:
   port: 8080
