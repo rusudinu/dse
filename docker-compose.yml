@@ -173,27 +173,6 @@ services:
           cpus: '0.5'
           memory: 512M
 
-  telegraf:
-    image: telegraf:1.27
-    container_name: telegraf
-    networks:
-      - rabbitmq_cluster
-    depends_on:
-      - influxdb
-      - rabbitmq1
-      - rabbitmq2
-      - rabbitmq3
-    volumes:
-      - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
-    deploy:
-      resources:
-        limits:
-          cpus: '0.25'
-          memory: 256M
-        reservations:
-          cpus: '0.1'
-          memory: 128M
-
   grafana:
     image: grafana/grafana:latest
     container_name: grafana

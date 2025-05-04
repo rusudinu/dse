@@ -1,7 +1,6 @@
 ## Components
 
 - **RabbitMQ Cluster**: Three node RabbitMQ cluster
-- **Telegraf**: Collects metrics from the RabbitMQ nodes using the Management API
 - **InfluxDB**: Time-series database to store the metrics
 - **Grafana**: Visualization platform with pre-configured dashboards for RabbitMQ
 
@@ -21,7 +20,6 @@ docker-compose up -d
 This will start:
 - Three RabbitMQ nodes in a cluster
 - InfluxDB for storing metrics
-- Telegraf for collecting RabbitMQ metrics
 - Grafana for visualization
 - Producer and Consumer applications (if included in your setup)
 
