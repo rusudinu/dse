@@ -15,7 +15,7 @@ spring:
           max-interval: 10000ms
           multiplier: 2.0
         acknowledge-mode: auto
-        prefetch: 10  # Increased to handle a fixed batch of messages at a time
+        prefetch: 1  # Handling one message at a time
 
 server:
   port: 8080
@@ -25,7 +25,6 @@ logging:
     root: INFO
     org.springframework: INFO 
 
-# Ollama configuration
 ollama:
   api:
     url: ${OLLAMA_API_URL:http://localhost:11434/api/generate}
