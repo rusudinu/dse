@@ -15,7 +15,7 @@
 Start the entire stack using Docker Compose:
 
 ```bash
-docker-compose up -d
+docker compose up --build --force-recreate
 ```
 This will start:
 - Three RabbitMQ nodes in a cluster
