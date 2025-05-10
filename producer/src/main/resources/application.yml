@@ -5,7 +5,6 @@ spring:
     addresses: ${SPRING_RABBITMQ_ADDRESSES:localhost:5672}
     username: ${SPRING_RABBITMQ_USERNAME:guest}
     password: ${SPRING_RABBITMQ_PASSWORD:guest}
-    # Cluster specific configurations
     publisher-confirm-type: correlated
     publisher-returns: true
     template:
