@@ -62,7 +62,7 @@ export const options = {
 };
 
 export default function() {
-  const url = 'http://localhost:8081/api/messages/100';
+  const url = 'http://localhost:8081/api/messages';
   const payload = JSON.stringify({
   });
   

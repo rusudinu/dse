@@ -16,8 +16,8 @@ public class MessageController {
 
 	private final RabbitTemplate rabbitTemplate;
 
-	@PostMapping("{messagesToSend}")
-	public String sendMessage(@PathVariable Long messagesToSend) {
+	@PostMapping
+	public String sendMessage() {
 		String imageUrl = "https://scanneralimente.ro/assets/marketing/home-vertical.png";
 		try {
 			rabbitTemplate.convertAndSend(RabbitMQConfig.QUEUE_NAME, imageUrl);

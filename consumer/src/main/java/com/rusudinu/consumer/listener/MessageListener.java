@@ -26,14 +26,11 @@ public class MessageListener {
         log.info("Received message with image URL: {}", imageUrl);
 
         try {
-            // Download the image
             byte[] imageBytes = imageDownloadService.downloadImage(imageUrl);
 
-            // Analyze the image using Ollama
             ImageAnalysisResult result = ollamaService.analyzeImage(imageUrl, imageBytes);
 
-            // Log the results
-            log.info("Image analysis result: URL={}, Category={}, Text={}", 
+            log.info("Image analysis result: URL={}, Category={}, Text={}",
                     result.getImageUrl(), 
                     result.getCategory(), 
                     result.getExtractedText() != null ? result.getExtractedText().substring(0, Math.min(50, result.getExtractedText().length())) + "..." : "None");
