@@ -45,7 +45,7 @@ export default function() {
   
   const start = new Date().getTime();
   
-  const response = http.post(url, payload, params);
+  const response = http.get(url, payload, params);
   
   const duration = new Date().getTime() - start;
   messagePostDuration.add(duration);
