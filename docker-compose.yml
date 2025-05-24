@@ -15,7 +15,7 @@ services:
       - RABBITMQ_ERLANG_COOKIE=SWQOKODSQALRPCLNMEQG
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
-    command: /bin/bash -c "rabbitmq-plugins enable rabbitmq_prometheus && rabbitmq-server & sleep 20; rabbitmqctl set_policy ha-all \"^.*\" '{\"ha-mode\":\"all\"}'; tail -f /dev/null"
+    command: /bin/bash -c "rabbitmq-plugins enable rabbitmq_prometheus && rabbitmq-server"
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
       interval: 10s
@@ -46,7 +46,7 @@ services:
       - RABBITMQ_ERLANG_COOKIE=SWQOKODSQALRPCLNMEQG
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
-    command: /bin/bash -c "sleep 10; rabbitmq-plugins enable rabbitmq_prometheus && rabbitmq-server & sleep 20; rabbitmqctl stop_app; rabbitmqctl join_cluster rabbit@rabbitmq1; rabbitmqctl start_app; rabbitmqctl set_policy ha-all \"^.*\" '{\"ha-mode\":\"all\"}'; tail -f /dev/null"
+    command: /bin/bash -c "sleep 10; rabbitmq-plugins enable rabbitmq_prometheus && rabbitmq-server & sleep 20; rabbitmqctl stop_app; rabbitmqctl join_cluster rabbit@rabbitmq1; rabbitmqctl start_app; tail -f /dev/null"
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
       interval: 10s
@@ -77,7 +77,7 @@ services:
       - RABBITMQ_ERLANG_COOKIE=SWQOKODSQALRPCLNMEQG
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
-    command: /bin/bash -c "sleep 10; rabbitmq-plugins enable rabbitmq_prometheus && rabbitmq-server & sleep 20; rabbitmqctl stop_app; rabbitmqctl join_cluster rabbit@rabbitmq1; rabbitmqctl start_app; rabbitmqctl set_policy ha-all \"^.*\" '{\"ha-mode\":\"all\"}'; tail -f /dev/null"
+    command: /bin/bash -c "sleep 10; rabbitmq-plugins enable rabbitmq_prometheus && rabbitmq-server & sleep 20; rabbitmqctl stop_app; rabbitmqctl join_cluster rabbit@rabbitmq1; rabbitmqctl start_app; tail -f /dev/null"
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
       interval: 10s
