@@ -7,13 +7,6 @@ spring:
     password: ${SPRING_RABBITMQ_PASSWORD:guest}
     listener:
       simple:
-        retry:
-          enabled: true
-          initial-interval: 1000ms
-          max-attempts: 3
-          max-interval: 10000ms
-          multiplier: 2.0
-        acknowledge-mode: auto
         prefetch: 1  # Handling one message at a time
 
 server:
