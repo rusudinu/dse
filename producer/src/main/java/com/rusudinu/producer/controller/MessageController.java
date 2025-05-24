@@ -16,7 +16,7 @@ public class MessageController {
 
 	private final RabbitTemplate rabbitTemplate;
 
-	@PostMapping
+	@GetMapping
 	public String sendMessage() {
 		String imageUrl = "https://scanneralimente.ro/assets/marketing/home-vertical.png";
 		try {
