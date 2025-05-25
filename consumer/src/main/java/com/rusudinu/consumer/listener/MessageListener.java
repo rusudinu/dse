@@ -26,7 +26,7 @@ public class MessageListener {
 
 	@RabbitListener(queues = RabbitMQConfig.QUEUE_NAME)
 	public void listen(@Payload String imageUrl) {
-		log.info("Received message with image URL: {}", imageUrl);
+//		log.info("Received message with image URL: {}", imageUrl);
 
 		try {
 //            byte[] imageBytes = imageDownloadService.downloadImage(imageUrl);
