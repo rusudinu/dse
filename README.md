@@ -39,12 +39,13 @@ This will start:
   - URL: http://localhost:8086
   - Credentials: admin/adminpassword
 
-### Running Load Tests
-
-```bash
-k6 run k6/post-messages-test.js
-```
+### Running Load Test
 
 ```bash
 k6 run k6/benchmark.js
+```
+
+### Restart cluster
+```bash
+docker compose down && docker compose down -v && docker compose up --build --force-recreate
 ```

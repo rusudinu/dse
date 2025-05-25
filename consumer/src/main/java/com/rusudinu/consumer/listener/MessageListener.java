@@ -2,6 +2,7 @@ package com.rusudinu.consumer.listener;
 
 import com.rusudinu.consumer.config.RabbitMQConfig;
 import com.rusudinu.consumer.model.ImageAnalysisResult;
+import com.rusudinu.consumer.model.ImageCategory;
 import com.rusudinu.consumer.model.ImageMessage;
 import com.rusudinu.consumer.service.ImageDownloadService;
 import com.rusudinu.consumer.service.OllamaService;
@@ -32,7 +33,18 @@ public class MessageListener {
 //
 //            ImageAnalysisResult result = ollamaService.analyzeImage(imageUrl, imageBytes);
 
-			ImageAnalysisResult result = ollamaService.analyzeImage(imageUrl, new byte[0]);
+			ImageAnalysisResult result = new ImageAnalysisResult(
+					imageUrl,
+					ImageCategory.INGREDIENTS_LABEL,
+					"Sample extracted text from the image",
+					null
+			);
+
+			try {
+				Thread.sleep(50);
+			} catch (InterruptedException e) {
+				log.warn("Thread sleep interrupted", e);
+			}
 
 			log.info("Image analysis result: URL={}, Category={}, Text={}",
 					result.getImageUrl(),

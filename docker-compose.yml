@@ -16,6 +16,8 @@ services:
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
     command: /bin/bash -c "rabbitmq-plugins enable rabbitmq_prometheus && rabbitmq-server"
+    volumes:
+      - rabbitmq1-data:/var/lib/rabbitmq
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
       interval: 10s
@@ -47,6 +49,8 @@ services:
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
     command: /bin/bash -c "sleep 10; rabbitmq-plugins enable rabbitmq_prometheus && rabbitmq-server & sleep 20; rabbitmqctl stop_app; rabbitmqctl join_cluster rabbit@rabbitmq1; rabbitmqctl start_app; tail -f /dev/null"
+    volumes:
+      - rabbitmq2-data:/var/lib/rabbitmq
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
       interval: 10s
@@ -78,6 +82,8 @@ services:
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
     command: /bin/bash -c "sleep 10; rabbitmq-plugins enable rabbitmq_prometheus && rabbitmq-server & sleep 20; rabbitmqctl stop_app; rabbitmqctl join_cluster rabbit@rabbitmq1; rabbitmqctl start_app; tail -f /dev/null"
+    volumes:
+      - rabbitmq3-data:/var/lib/rabbitmq
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
       interval: 10s
@@ -96,7 +102,6 @@ services:
     build:
       context: ./producer
       dockerfile: Dockerfile
-    container_name: producer
     networks:
       - rabbitmq_cluster
     depends_on:
@@ -106,13 +111,12 @@ services:
         condition: service_healthy
       rabbitmq3:
         condition: service_healthy
-    ports:
-      - "8081:8081"
     environment:
       SPRING_RABBITMQ_ADDRESSES: rabbitmq1:5672,rabbitmq2:5672,rabbitmq3:5672
       SPRING_RABBITMQ_USERNAME: guest
       SPRING_RABBITMQ_PASSWORD: guest
     deploy:
+      replicas: 3
       resources:
         limits:
           cpus: '1.0'
@@ -125,7 +129,6 @@ services:
     build:
       context: ./consumer
       dockerfile: Dockerfile
-    container_name: consumer
     networks:
       - rabbitmq_cluster
     depends_on:
@@ -135,14 +138,13 @@ services:
         condition: service_healthy
       rabbitmq3:
         condition: service_healthy
-    ports:
-      - "8080:8080"
     environment:
       SPRING_RABBITMQ_ADDRESSES: rabbitmq1:5672,rabbitmq2:5672,rabbitmq3:5672
       SPRING_RABBITMQ_USERNAME: guest
       SPRING_RABBITMQ_PASSWORD: guest
       OLLAMA_API_URL: http://host.docker.internal:11434/api/generate
     deploy:
+      replicas: 3
       resources:
         limits:
           cpus: '1.0'
@@ -208,12 +210,15 @@ services:
       - "9090:9090"
     volumes:
       - ./prometheus:/etc/prometheus
+      - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - rabbitmq_cluster
     depends_on:
       - rabbitmq1
       - rabbitmq2
       - rabbitmq3
+      - producer
+      - consumer
     deploy:
       resources:
         limits:
@@ -223,9 +228,32 @@ services:
           cpus: '0.2'
           memory: 256M
 
+  nginx:
+    image: nginx:latest
+    container_name: nginx_load_balancer
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - rabbitmq_cluster
+    depends_on:
+      - producer
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
+
 volumes:
   grafana-storage:
   influxdb-data:
+  rabbitmq1-data: {}
+  rabbitmq2-data: {}
+  rabbitmq3-data: {}
 
 networks:
   rabbitmq_cluster:

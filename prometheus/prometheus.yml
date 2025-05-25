@@ -33,11 +33,21 @@ scrape_configs:
     metrics_path: /metrics
 
   - job_name: "producer"
-    static_configs:
-      - targets: ["producer:8081"]
+    # static_configs:
+    #   - targets: ["producer:8081"]
+    dns_sd_configs:
+      - names:
+          - 'tasks.producer' # Docker service discovery name
+        type: 'A'
+        port: 8081
     metrics_path: /actuator/prometheus
 
   - job_name: "consumer"
-    static_configs:
-      - targets: ["consumer:8080"]
+    # static_configs:
+    #  - targets: ["consumer:8080"]
+    dns_sd_configs:
+      - names:
+          - 'tasks.consumer' # Docker service discovery name
+        type: 'A'
+        port: 8080
     metrics_path: /actuator/prometheus
