@@ -10,7 +10,7 @@ export const options = {
     scenarios: {
         fixed_rate_test: {
             executor: 'constant-arrival-rate',
-            rate: 1000,
+            rate: 200,
             timeUnit: '1s',
             duration: '5m',
             preAllocatedVUs: 100,
