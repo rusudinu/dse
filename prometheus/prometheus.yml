@@ -1,16 +1,6 @@
 global:
-  scrape_interval: 15s
-  evaluation_interval: 15s
-
-alerting:
-  alertmanagers:
-    - static_configs:
-        - targets:
-          # - alertmanager:9093
-
-rule_files:
-  # - "first_rules.yml"
-  # - "second_rules.yml"
+  scrape_interval: 5s
+  evaluation_interval: 5s
 
 scrape_configs:
   - job_name: "prometheus"
@@ -33,21 +23,17 @@ scrape_configs:
     metrics_path: /metrics
 
   - job_name: "producer"
-    # static_configs:
-    #   - targets: ["producer:8081"]
     dns_sd_configs:
       - names:
-          - 'tasks.producer' # Docker service discovery name
+          - 'tasks.producer'
         type: 'A'
         port: 8081
     metrics_path: /actuator/prometheus
 
   - job_name: "consumer"
-    # static_configs:
-    #  - targets: ["consumer:8080"]
     dns_sd_configs:
       - names:
-          - 'tasks.consumer' # Docker service discovery name
+          - 'tasks.consumer'
         type: 'A'
         port: 8080
     metrics_path: /actuator/prometheus

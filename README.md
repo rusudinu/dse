@@ -1,28 +1,3 @@
-## Components
-
-- **RabbitMQ Cluster**: Three node RabbitMQ cluster
-- **InfluxDB**: Time-series database to store the metrics
-- **Grafana**: Visualization platform with pre-configured dashboards for RabbitMQ
-
-## Getting Started
-
-### Prerequisites
-
-- Docker and Docker Compose
-
-### Running the Stack
-
-Start the entire stack using Docker Compose:
-
-```bash
-docker compose up --build --force-recreate
-```
-This will start:
-- Three RabbitMQ nodes in a cluster
-- InfluxDB for storing metrics
-- Grafana for visualization
-- Producer and Consumer applications (if included in your setup)
-
 ### Accessing the UIs
 
 - **RabbitMQ Management UI**:
