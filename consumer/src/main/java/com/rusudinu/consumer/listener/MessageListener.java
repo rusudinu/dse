@@ -41,16 +41,16 @@ public class MessageListener {
 			);
 
 			try {
-				Thread.sleep(50);
+				Thread.sleep(4);
 			} catch (InterruptedException e) {
 				log.warn("Thread sleep interrupted", e);
 			}
 
-			log.info("Image analysis result: URL={}, Category={}, Text={}",
-					result.getImageUrl(),
-					result.getCategory(),
-					result.getExtractedText() != null ? result.getExtractedText()
-							.substring(0, Math.min(50, result.getExtractedText().length())) + "..." : "None");
+//			log.info("Image analysis result: URL={}, Category={}, Text={}",
+//					result.getImageUrl(),
+//					result.getCategory(),
+//					result.getExtractedText() != null ? result.getExtractedText()
+//							.substring(0, Math.min(50, result.getExtractedText().length())) + "..." : "None");
 
 			if (result.getProcessingError() != null) {
 				log.error("Processing error: {}", result.getProcessingError());

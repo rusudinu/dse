@@ -49,3 +49,6 @@ k6 run k6/benchmark.js
 ```bash
 docker compose down && docker compose down -v && docker compose up --build --force-recreate
 ```
+```bash
+docker-compose exec rabbitmq1 rabbitmqctl delete_queue messages
+```

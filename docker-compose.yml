@@ -98,39 +98,6 @@ services:
           cpus: '0.1'
           memory: 256M
 
-  rabbitmq4:
-    image: rabbitmq:4.1-management
-    hostname: rabbitmq4
-    container_name: rabbitmq4
-    networks:
-      - rabbitmq_cluster
-    ports:
-      - "5675:5672"
-      - "15675:15672"
-      - "15695:15692"  # Prometheus metrics endpoint
-    depends_on:
-      - rabbitmq1
-    environment:
-      - RABBITMQ_ERLANG_COOKIE=SWQOKODSQALRPCLNMEQG
-      - RABBITMQ_DEFAULT_USER=guest
-      - RABBITMQ_DEFAULT_PASS=guest
-    command: /bin/bash -c "sleep 10; rabbitmq-plugins enable rabbitmq_prometheus && rabbitmq-server & sleep 20; rabbitmqctl stop_app; rabbitmqctl join_cluster rabbit@rabbitmq1; rabbitmqctl start_app; tail -f /dev/null"
-    volumes:
-      - rabbitmq4-data:/var/lib/rabbitmq
-    healthcheck:
-      test: [ "CMD", "rabbitmq-diagnostics", "-q", "ping" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    deploy:
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: 512M
-        reservations:
-          cpus: '0.1'
-          memory: 256M
-
   producer:
     build:
       context: ./producer
@@ -145,7 +112,7 @@ services:
       rabbitmq3:
         condition: service_healthy
     environment:
-      SPRING_RABBITMQ_ADDRESSES: rabbitmq1:5672,rabbitmq2:5672,rabbitmq3:5672,rabbitmq4:5672
+      SPRING_RABBITMQ_ADDRESSES: rabbitmq1:5672,rabbitmq2:5672,rabbitmq3:5672
       SPRING_RABBITMQ_USERNAME: guest
       SPRING_RABBITMQ_PASSWORD: guest
     deploy:
@@ -172,7 +139,7 @@ services:
       rabbitmq3:
         condition: service_healthy
     environment:
-      SPRING_RABBITMQ_ADDRESSES: rabbitmq1:5672,rabbitmq2:5672,rabbitmq3:5672,rabbitmq4:5672
+      SPRING_RABBITMQ_ADDRESSES: rabbitmq1:5672,rabbitmq2:5672,rabbitmq3:5672
       SPRING_RABBITMQ_USERNAME: guest
       SPRING_RABBITMQ_PASSWORD: guest
       OLLAMA_API_URL: http://host.docker.internal:11434/api/generate
@@ -287,7 +254,6 @@ volumes:
   rabbitmq1-data: {}
   rabbitmq2-data: {}
   rabbitmq3-data: {}
-  rabbitmq4-data: {}
 
 networks:
   rabbitmq_cluster:
